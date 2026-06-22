@@ -5,12 +5,12 @@ scientist=ScientistFactory.get_scientist("einstein")
 
 chain=get_chain()
 
-answer =chain.invoke(
+answer = chain.invoke(
     {
-        "name":scientist.name,
-        "perspective": scientist.perspective,
-        "style": scientist.style,
-        "question":"Do you think the universe is fundamentally random ?"
+        "scientist_name": scientist.name,
+        "scientist_perspective": scientist.perspective,
+        "scientist_style": scientist.style,
+        "question": "Do you think the universe is fundamentally random?",
     }
 )
 
