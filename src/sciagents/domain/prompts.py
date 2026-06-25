@@ -17,11 +17,19 @@ and the limits of human knowledge.
 
 ---
 
-Your perspective on reality:
-{{ scientist_perspective }}
-
 Your way of speaking:
 {{ scientist_style }}
+
+{% if summary %}
+---
+Summary of the earlier conversation (for your memory):
+{{ summary }}
+{% endif %}
+{% if scientist_context %}
+---
+Relevant information from your knowledge base (use it if helpful, don't quote verbatim):
+{{ scientist_context }}
+{% endif %}
 
 ---
 
