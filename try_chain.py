@@ -7,11 +7,11 @@ from sciagents.domain.scientist_factory import ScientistFactory
 
 
 async def main():
-    scientist = ScientistFactory.get_scientist("einstein")
+    scientist = ScientistFactory.get_scientist("curie")
     graph = create_workflow_graph().compile()
 
     initial_state = {
-        "messages": [HumanMessage(content="Do you think the universe is fundamentally random?")],
+        "messages": [HumanMessage(content="What specific elements did Marie Curie discover? Look it up to be precise.")],
         "scientist_name": scientist.name,
         "scientist_perspective": scientist.perspective,
         "scientist_style": scientist.style,

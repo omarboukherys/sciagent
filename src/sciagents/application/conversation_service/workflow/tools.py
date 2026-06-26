@@ -1,4 +1,5 @@
 from langchain_core.tools import tool
+from sciagents.application.rag.retrievers import get_retriever
 
 @tool
 def retrieve_scientist_context(query: str) -> str:
@@ -6,6 +7,8 @@ def retrieve_scientist_context(query: str) -> str:
     and the nature of reality. Use this when you need specific facts you are
     unsure about, rather than guessing."""
 
-    return f"[stubbed knowledge base] placeholder context for query: {query!r}"
+    retriever = get_retriever()
+    docs = retriever.invoke(query)
+    return "\n\n".join(doc.page_content for doc in docs)
 
 tools=[retrieve_scientist_context]
