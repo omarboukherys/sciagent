@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h3>SciAgents v2 WebSocket Test</h3>
+  <input id="msg" value="What is gravity?" size="40" />
+  <button onclick="send()">Send to Newton</button>
+  <pre id="out"></pre>
+  <script>
+    const out = document.getElementById("out");
+    const ws = new WebSocket("ws://127.0.0.1:8000/ws/chat");
+    ws.onopen = () => { out.textContent = "[connected]\n"; };
+    ws.onmessage = (e) => {
+      const d = JSON.parse(e.data);
+      if (d.token) out.textContent += d.token;
+      if (d.done) out.textContent += "\n[done]";
+    };
+    function send() {
+      out.textContent = "";
+      ws.send(JSON.stringify({
+        scientist_id: "newton",
+        message: document.getElementById("msg").value,
+        thread_id: "ws-v2-1"
+      }));
+    }
+  </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 
-from sciagents.application.conversation_service.generate_response import generate_response
+from sciagents.application.conversation_service.generate_response import generate_response, stream_response
 from sciagents.domain.scientist_factory import ScientistFactory
 
 app=FastAPI(title="SciAgents API")
@@ -29,3 +29,22 @@ async def chat(request: ChatRequest):
     )
 
     return ChatResponse(resposnse=reply)
+
+@app.websocket("/ws/chat")
+async def websocket_chat(websocket: WebSocket):
+    """Stream a scientist's reply token-by-token over a WebSocket."""
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_json()
+
+            async for token in stream_response(
+                scientist_id=data["scientist_id"],
+                message=data["message"],
+                thread_id=data.get("thread_id", "default"),
+            ):
+                await websocket.send_json({"token": token})
+
+            await websocket.send_json({"done": True})
+    except WebSocketDisconnect:
+        pass
