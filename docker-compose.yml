@@ -1,0 +1,25 @@
+services:
+  api:
+    build: .
+    container_name: sciagents_v2_api
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_LLM_MODEL=openai/gpt-oss-120b
+      - MONGO_URI=mongodb://local_dev_atlas:27017/?directConnection=true
+      - MONGO_DB_NAME=sciagents_v2
+    depends_on:
+      local_dev_atlas:
+        condition: service_healthy
+
+  local_dev_atlas:
+    image: mongodb/mongodb-atlas-local:latest
+    container_name: local_dev_atlas
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
