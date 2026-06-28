@@ -26,5 +26,17 @@ class Settings(BaseSettings):
     # --- MongoDB Configuration ---
     MONGO_URI: str = "mongodb://localhost:27017/?directConnection=true"
     MONGO_DB_NAME: str = "sciagents_v2"
+
+    # --- Opik Configuration ---
+    OPIK_API_KEY: str | None = None
+    OPIK_WORKSPACE: str | None = None
+    OPIK_PROJECT_NAME: str = "sciagents"
     
 settings=Settings()
+
+import os
+
+if settings.OPIK_API_KEY:
+    os.environ["OPIK_API_KEY"] = settings.OPIK_API_KEY
+    os.environ["OPIK_WORKSPACE"] = settings.OPIK_WORKSPACE or ""
+    os.environ["OPIK_PROJECT_NAME"] = settings.OPIK_PROJECT_NAME

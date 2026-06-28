@@ -1,4 +1,6 @@
 from contextlib import contextmanager
+import opik
+from opik.integrations.langchain import OpikTracer
 
 from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.mongodb import MongoDBSaver
@@ -15,13 +17,18 @@ def get_compiled_graph():
 
         yield graph
 
+@opik.track(name="generate_response")
 async def generate_response(scientist_id: str, message: str, thread_id: str) -> str:
     """Run one conversation turn, persisted under thread_id."""
 
     scientist=ScientistFactory.get_scientist(scientist_id)
 
     with get_compiled_graph() as graph:
-        config={"configurable":{"thread_id": thread_id}}
+        opik_tracer = OpikTracer(graph=graph.get_graph(xray=True))
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "callbacks": [opik_tracer],
+        }
 
         result=await graph.ainvoke(
             {
